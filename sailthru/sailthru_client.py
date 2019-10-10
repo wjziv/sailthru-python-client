@@ -758,7 +758,7 @@ class SailthruClient(object):
             # Accept stringified json dumps.
             # Just encode them for file-transfer.
             if isinstance(data['file'], str):
-                file_data = data['file'].encode()
+                file_data = {'file': data['file'].encode()}
             else:
                 file_data = {'file': open(data['file'], 'rb')}
         else:
