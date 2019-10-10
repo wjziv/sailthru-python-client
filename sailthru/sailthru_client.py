@@ -776,9 +776,14 @@ class SailthruClient(object):
         return response
 
     def _prepare_json_payload(self, data):
-        payload = {'api_key': self.api_key,
-                   'format': 'json',
-                   'json': json.dumps(data)}
+        if isinstance(data,str):
+            payload = {'api_key': self.api_key,
+                       'format': 'json',
+                       'json': data}
+        else:
+            payload = {'api_key': self.api_key,
+                       'format': 'json',
+                       'json': json.dumps(data)}
         signature = get_signature_hash(payload, self.secret)
         payload['sig'] = signature
         return payload
