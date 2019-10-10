@@ -755,7 +755,10 @@ class SailthruClient(object):
         Make Request to Sailthru API with given data and api key, format and signature hash
         """
         if 'file' in data:
-            file_data = {'file': open(data['file'], 'rb')}
+            try:
+                file_data = {'file': open(data['file'], 'rb')}
+            except:
+                file_data = data['file']
         else:
             file_data = None
 
