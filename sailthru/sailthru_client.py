@@ -14,7 +14,7 @@ def extract_params(params):
     """
     values = []
     if isinstance(params, dict):
-        for key, value in params.items():
+        for value in params.values():
             values.extend(extract_params(value))
     elif isinstance(params, list):
         for value in params:
@@ -755,10 +755,12 @@ class SailthruClient(object):
         Make Request to Sailthru API with given data and api key, format and signature hash
         """
         if 'file' in data:
-            try:
+            # Accept stringified json dumps.
+            # Just encode them for file-transfer.
+            if isinstance(data['file'], str):
+                file_data = data['file'].encode()
+            else:
                 file_data = {'file': open(data['file'], 'rb')}
-            except:
-                file_data = data['file']
         else:
             file_data = None
 
@@ -768,7 +770,7 @@ class SailthruClient(object):
         url = self.api_url + '/' + action
         proxies = self.proxies
         file_data = file_data or {}
-        response = sailthru_http_request(url, data, method, file_data, headers, proxies, self.request_timeout)
+        response = sailthru_http_request(url, data, method, file_data, headers, proxies,  self.request_timeout)
         if (action in self.last_rate_limit_info):
             self.last_rate_limit_info[action][method] = response.get_rate_limit_headers()
         else:
@@ -776,7 +778,8 @@ class SailthruClient(object):
         return response
 
     def _prepare_json_payload(self, data):
-        if isinstance(data,str):
+        # Accept stringified json data as-is.
+        if isinstance(data, str):
             payload = {'api_key': self.api_key,
                        'format': 'json',
                        'json': data}
