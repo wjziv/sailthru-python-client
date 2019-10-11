@@ -27,7 +27,7 @@ def flatten_nested_hash(hash_table):
         return f
     return flatten(hash_table, False)
 
-def sailthru_http_request(url, data, method, file_data=None, headers=None, proxies=None, request_timeout=10):
+def sailthru_http_request(url, data, method, file_data=None, headers=None, proxies=None, request_timeout=None):
     """
     Perform an HTTP GET / POST / DELETE request
     """
